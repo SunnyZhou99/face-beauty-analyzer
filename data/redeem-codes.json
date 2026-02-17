@@ -1,0 +1,35 @@
+[
+  {
+    "id": "initial1",
+    "code": "BEAUTY2026",
+    "count": 5,
+    "description": "新年快乐赠送5次",
+    "maxUses": 1,
+    "usedCount": 0,
+    "status": "active",
+    "expiresAt": null,
+    "createdAt": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "initial2",
+    "code": "AI666",
+    "count": 10,
+    "description": "专属兑换码赠送10次",
+    "maxUses": 1,
+    "usedCount": 0,
+    "status": "active",
+    "expiresAt": null,
+    "createdAt": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "initial3",
+    "code": "TEST888",
+    "count": 1,
+    "description": "测试兑换码赠送1次",
+    "maxUses": 1,
+    "usedCount": 1,
+    "status": "disabled",
+    "expiresAt": null,
+    "createdAt": "2026-01-01T00:00:00.000Z"
+  }
+]
