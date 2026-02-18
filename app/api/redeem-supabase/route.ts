@@ -89,8 +89,10 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error('Error reading redeem codes:', error);
+    console.error('Error details:', JSON.stringify(error, null, 2));
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json(
-      { success: false, error: '读取兑换码失败' },
+      { success: false, error: '读取兑换码失败', details: errorMessage },
       { status: 500 }
     );
   }
