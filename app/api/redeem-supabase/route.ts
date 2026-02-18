@@ -4,6 +4,9 @@ import { supabase, RedeemCode, RedeemUsage } from '@/lib/supabase';
 // GET: 获取所有兑换码或验证特定兑换码
 export async function GET(request: NextRequest) {
   try {
+    console.log('开始 GET 请求');
+    console.log('Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL ? '已设置' : '未设置');
+
     const searchParams = request.nextUrl.searchParams;
     const code = searchParams.get('code');
 
@@ -59,10 +62,13 @@ export async function GET(request: NextRequest) {
     }
 
     // 否则返回所有兑换码列表
+    console.log('查询兑换码列表...');
     const { data: codes, error } = await supabase
       .from('redeem_codes')
       .select('*')
       .order('createdAt', { ascending: false });
+
+    console.log('查询结果:', { codes, error });
 
     if (error) {
       throw error;
