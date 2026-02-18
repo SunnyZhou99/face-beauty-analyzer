@@ -202,34 +202,6 @@ export default function AdminPage() {
     return new Date(dateStr).toLocaleString('zh-CN');
   };
 
-  // 生成随机兑换码
-  const generateRandomCode = () => {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let result = '';
-    for (let i = 0; i < 12; i++) {
-      result += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    setNewCode({ ...newCode, code: result });
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'active': return 'text-green-600 bg-green-100';
-      case 'disabled': return 'text-red-600 bg-red-100';
-      case 'expired': return 'text-gray-600 bg-gray-100';
-      default: return 'text-gray-600 bg-gray-100';
-    }
-  };
-
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case 'active': return '有效';
-      case 'disabled': return '已禁用';
-      case 'expired': return '已过期';
-      default: return status;
-    }
-  };
-
   // 登录界面
   if (!isAuthenticated) {
     return (
