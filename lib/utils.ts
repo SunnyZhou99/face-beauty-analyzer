@@ -30,9 +30,9 @@ export async function detectFaces(imageElement: HTMLImageElement | HTMLVideoElem
         faceCount: faces.faces.length
       };
     }
-    
-    const width = imageElement.videoWidth || imageElement.naturalWidth;
-    const height = imageElement.videoHeight || imageElement.naturalHeight;
+
+    const width = (imageElement as any).videoWidth || (imageElement as HTMLImageElement).naturalWidth;
+    const height = (imageElement as any).videoHeight || (imageElement as HTMLImageElement).naturalHeight;
     
     if (width < 100 || height < 100) {
       return {
