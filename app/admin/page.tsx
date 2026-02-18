@@ -15,6 +15,9 @@ interface RedeemCode {
 }
 
 export default function AdminPage() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [password, setPassword] = useState('');
+  const [passwordError, setPasswordError] = useState('');
   const [codes, setCodes] = useState<RedeemCode[]>([]);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -26,10 +29,41 @@ export default function AdminPage() {
     expiresAt: ''
   });
 
+  // 简单的密码验证（实际应用中应该使用更安全的方式）
+  const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'admin123';
+
+  // 检查是否已登录
+  useEffect(() => {
+    const auth = localStorage.getItem('adminAuth');
+    if (auth === 'true') {
+      setIsAuthenticated(true);
+      fetchCodes();
+    }
+  }, []);
+
+  // 登录
+  const handleLogin = () => {
+    if (password === ADMIN_PASSWORD) {
+      setIsAuthenticated(true);
+      localStorage.setItem('adminAuth', 'true');
+      setPasswordError('');
+      fetchCodes();
+    } else {
+      setPasswordError('密码错误');
+    }
+  };
+
+  // 登出
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    localStorage.removeItem('adminAuth');
+    setPassword('');
+  };
+
   // 获取兑换码列表
   const fetchCodes = async () => {
     try {
-      const response = await fetch('/api/redeem');
+      const response = await fetch('/api/redeem-supabase');
       const data = await response.json();
       if (data.success) {
         setCodes(data.codes);
@@ -38,10 +72,6 @@ export default function AdminPage() {
       console.error('获取兑换码失败:', error);
     }
   };
-
-  useEffect(() => {
-    fetchCodes();
-  }, []);
 
   // 创建兑换码
   const handleCreateCode = async () => {
@@ -52,7 +82,7 @@ export default function AdminPage() {
 
     setLoading(true);
     try {
-      const response = await fetch('/api/admin/redeem-codes', {
+      const response = await fetch('/api/admin/redeem-codes-supabase', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newCode)
@@ -79,7 +109,7 @@ export default function AdminPage() {
     if (!confirm('确定要删除这个兑换码吗？')) return;
 
     try {
-      const response = await fetch('/api/redeem', {
+      const response = await fetch('/api/redeem-supabase', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ codeId })
@@ -100,7 +130,7 @@ export default function AdminPage() {
   // 更新兑换码状态
   const handleUpdateStatus = async (codeId: string, status: string) => {
     try {
-      const response = await fetch('/api/admin/redeem-codes', {
+      const response = await fetch('/api/admin/redeem-codes-supabase', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ codeId, status })
@@ -143,17 +173,76 @@ export default function AdminPage() {
     }
   };
 
+  // 登录界面
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-gray-800 mb-2">🔐 管理后台</h1>
+            <p className="text-gray-600">请输入管理员密码</p>
+          </div>
+
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-semibold mb-2 text-gray-700">密码</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setPasswordError('');
+                }}
+                onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
+                placeholder="请输入密码"
+                className="w-full border-2 border-gray-200 rounded-lg px-4 py-3 focus:border-purple-500 outline-none transition-all"
+              />
+              {passwordError && (
+                <p className="text-red-500 text-sm mt-2">{passwordError}</p>
+              )}
+            </div>
+
+            <button
+              onClick={handleLogin}
+              className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-3 rounded-xl transition-all transform hover:scale-105"
+            >
+              登录
+            </button>
+
+            <div className="text-center mt-6">
+              <a
+                href="/"
+                className="text-purple-600 hover:text-purple-800 text-sm font-semibold"
+              >
+                ← 返回首页
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // 管理后台界面
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 p-8">
       <div className="max-w-6xl mx-auto">
         {/* 头部 */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">
-            🎫 兑换码管理后台
-          </h1>
-          <p className="text-gray-600">
-            实时监控和管理所有兑换码的使用情况
-          </p>
+        <div className="mb-8 flex justify-between items-center">
+          <div>
+            <h1 className="text-4xl font-bold text-gray-800 mb-2">
+              🎫 兑换码管理后台
+            </h1>
+            <p className="text-gray-600">
+              实时监控和管理所有兑换码的使用情况
+            </p>
+          </div>
+          <button
+            onClick={handleLogout}
+            className="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold px-6 py-3 rounded-xl transition-all"
+          >
+            退出登录
+          </button>
         </div>
 
         {/* 统计卡片 */}

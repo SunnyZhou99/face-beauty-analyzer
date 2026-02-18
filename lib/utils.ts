@@ -967,7 +967,7 @@ export async function validateRedeemCodeAPI(code: string): Promise<{
   code?: any;
 }> {
   try {
-    const response = await fetch(`/api/redeem?code=${encodeURIComponent(code)}`);
+    const response = await fetch(`/api/redeem-supabase?code=${encodeURIComponent(code)}`);
     const data = await response.json();
 
     if (data.valid) {
@@ -998,7 +998,7 @@ export async function useRedeemCodeAPI(code: string): Promise<{
   count?: number;
 }> {
   try {
-    const response = await fetch('/api/redeem', {
+    const response = await fetch('/api/redeem-supabase', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ code })

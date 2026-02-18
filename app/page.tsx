@@ -353,7 +353,7 @@ export default function Home() {
 
   // 支付功能（模拟）
   const handlePayment = () => {
-    alert('💳 支付功能开发中...\n\n暂时请使用兑换码增加次数！\n\n测试兑换码：BEAUTY2026、AI666');
+    alert('💳 支付功能开发中...\n\n暂时请使用兑换码增加次数！');
   };
 
   // 清理资源
@@ -804,9 +804,6 @@ export default function Home() {
             )}
 
             <div className="mt-6 text-center">
-              <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-500'} mb-2`}>
-                测试兑换码: BEAUTY2026 (5次) | AI666 (10次) | TEST888 (1次)
-              </p>
               <button
                 onClick={() => {
                   if (confirm('确定要清除所有数据吗？包括历史记录和兑换记录。')) {
