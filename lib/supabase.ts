@@ -15,11 +15,11 @@ export interface RedeemCode {
   code: string;
   count: number;
   description: string;
-  maxUses: number;
-  usedCount: number;
+  maxuses: number;
+  usedcount: number;
   status: 'active' | 'disabled' | 'expired';
-  expiresAt: string | null;
-  createdAt: string;
+  expiresat: string | null;
+  createdat: string;
 }
 
 // 兑换记录类型

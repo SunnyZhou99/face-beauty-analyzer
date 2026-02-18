@@ -7,11 +7,11 @@ interface RedeemCode {
   code: string;
   count: number;
   description: string;
-  maxUses: number;
-  usedCount: number;
+  maxuses: number;
+  usedcount: number;
   status: 'active' | 'disabled' | 'expired';
-  expiresAt: string | null;
-  createdAt: string;
+  expiresat: string | null;
+  createdat: string;
 }
 
 export default function AdminPage() {
@@ -196,6 +196,40 @@ export default function AdminPage() {
     }
   };
 
+  // 格式化日期
+  const formatDate = (dateStr: string | null) => {
+    if (!dateStr) return '永不过期';
+    return new Date(dateStr).toLocaleString('zh-CN');
+  };
+
+  // 生成随机兑换码
+  const generateRandomCode = () => {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let result = '';
+    for (let i = 0; i < 12; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    setNewCode({ ...newCode, code: result });
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'active': return 'text-green-600 bg-green-100';
+      case 'disabled': return 'text-red-600 bg-red-100';
+      case 'expired': return 'text-gray-600 bg-gray-100';
+      default: return 'text-gray-600 bg-gray-100';
+    }
+  };
+
+  const getStatusText = (status: string) => {
+    switch (status) {
+      case 'active': return '有效';
+      case 'disabled': return '已禁用';
+      case 'expired': return '已过期';
+      default: return status;
+    }
+  };
+
   // 登录界面
   if (!isAuthenticated) {
     return (
@@ -283,13 +317,13 @@ export default function AdminPage() {
           </div>
           <div className="bg-white rounded-2xl p-6 shadow-lg">
             <div className="text-3xl font-bold text-blue-600">
-              {codes.reduce((sum, c) => sum + c.usedCount, 0)}
+              {codes.reduce((sum, c) => sum + c.usedcount, 0)}
             </div>
             <div className="text-gray-600 text-sm">总使用次数</div>
           </div>
           <div className="bg-white rounded-2xl p-6 shadow-lg">
             <div className="text-3xl font-bold text-orange-600">
-              {codes.filter(c => c.usedCount >= c.maxUses).length}
+              {codes.filter(c => c.usedcount >= c.maxuses).length}
             </div>
             <div className="text-gray-600 text-sm">已用完</div>
           </div>
@@ -325,6 +359,7 @@ export default function AdminPage() {
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">描述</th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">使用情况</th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">状态</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">过期时间</th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">创建时间</th>
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">操作</th>
                 </tr>
@@ -339,14 +374,14 @@ export default function AdminPage() {
                     <td className="px-6 py-4 text-gray-600">{code.description}</td>
                     <td className="px-6 py-4">
                       <div className="text-sm">
-                        <span className={code.usedCount >= code.maxUses ? 'text-red-600' : 'text-green-600'}>
-                          {code.usedCount}/{code.maxUses}
+                        <span className={code.usedcount >= code.maxuses ? 'text-red-600' : 'text-green-600'}>
+                          {code.usedcount}/{code.maxuses}
                         </span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2 mt-1">
                         <div
-                          className={`h-2 rounded-full ${code.usedCount >= code.maxUses ? 'bg-red-500' : 'bg-green-500'}`}
-                          style={{ width: `${(code.usedCount / code.maxUses) * 100}%` }}
+                          className={`h-2 rounded-full ${code.usedcount >= code.maxuses ? 'bg-red-500' : 'bg-green-500'}`}
+                          style={{ width: `${(code.usedcount / code.maxuses) * 100}%` }}
                         ></div>
                       </div>
                     </td>
@@ -356,7 +391,10 @@ export default function AdminPage() {
                       </span>
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-500">
-                      {new Date(code.createdAt).toLocaleString('zh-CN')}
+                      {formatDate(code.expiresat)}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-500">
+                      {new Date(code.createdat).toLocaleString('zh-CN')}
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex gap-2">

@@ -19,8 +19,8 @@ export async function POST(request: NextRequest) {
         code: code.toUpperCase().trim(),
         count: parseInt(count),
         description: description || '',
-        maxUses: parseInt(maxUses) || 1,
-        expiresAt: expiresAt || null,
+        maxuses: parseInt(maxUses) || 1,
+        expiresat: expiresAt || null,
         status: 'active'
       })
       .select()

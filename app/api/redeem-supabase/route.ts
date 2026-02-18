@@ -30,12 +30,12 @@ export async function GET(request: NextRequest) {
       }
 
       // 检查过期时间
-      if (codeData.expiresAt && new Date() > new Date(codeData.expiresAt)) {
+      if (codeData.expiresat && new Date() > new Date(codeData.expiresat)) {
         return NextResponse.json({ valid: false, message: '兑换码已过期' });
       }
 
       // 检查使用次数
-      if (codeData.usedCount >= codeData.maxUses) {
+      if (codeData.usedcount >= codeData.maxuses) {
         return NextResponse.json({ valid: false, message: '兑换码已被用完' });
       }
 
@@ -143,7 +143,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 检查过期时间
-    if (codeData.expiresAt && new Date() > new Date(codeData.expiresAt)) {
+    if (codeData.expiresat && new Date() > new Date(codeData.expiresat)) {
       return NextResponse.json(
         { success: false, message: '兑换码已过期' },
         { status: 400 }
@@ -151,7 +151,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 检查使用次数
-    if (codeData.usedCount >= codeData.maxUses) {
+    if (codeData.usedcount >= codeData.maxuses) {
       return NextResponse.json(
         { success: false, message: '兑换码已被用完' },
         { status: 400 }
@@ -194,13 +194,13 @@ export async function POST(request: NextRequest) {
     }
 
     // 更新兑换码使用次数
-    const newUsedCount = codeData.usedCount + 1;
-    const newStatus = newUsedCount >= codeData.maxUses ? 'disabled' : codeData.status;
+    const newUsedCount = codeData.usedcount + 1;
+    const newStatus = newUsedCount >= codeData.maxuses ? 'disabled' : codeData.status;
 
     const { error: updateError } = await supabase
       .from('redeem_codes')
       .update({
-        usedCount: newUsedCount,
+        usedcount: newUsedCount,
         status: newStatus
       })
       .eq('id', codeData.id);
