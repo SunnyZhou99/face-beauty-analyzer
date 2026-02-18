@@ -131,17 +131,18 @@ export default function Home() {
       const mediaStream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: 'user', width: 640, height: 480 }
       });
+      setStream(mediaStream);
+      setIsCameraOpen(true);
 
-      if (videoRef.current) {
-        videoRef.current.srcObject = mediaStream;
-        // 等待视频元数据加载
-        await new Promise((resolve) => {
-          videoRef.current!.onloadedmetadata = resolve;
-        });
-        await videoRef.current.play();
-        setStream(mediaStream);
-        setIsCameraOpen(true);
-      }
+      // 使用 setTimeout 确保 videoRef 已经渲染
+      setTimeout(() => {
+        if (videoRef.current) {
+          videoRef.current.srcObject = mediaStream;
+          videoRef.current.play().catch(err => {
+            console.error('Video play error:', err);
+          });
+        }
+      }, 100);
     } catch (error) {
       alert('无法访问摄像头，请检查浏览器权限设置！📷');
       console.error('Camera error:', error);
