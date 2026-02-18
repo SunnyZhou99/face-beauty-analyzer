@@ -48,8 +48,8 @@ export async function GET(request: NextRequest) {
       const { data: userUsages, error: usageError } = await supabase
         .from('redeem_usages')
         .select('*')
-        .eq('codeId', codeData.id)
-        .eq('userId', userId);
+        .eq('codeid', codeData.id)
+        .eq('userid', userId);
 
       if (usageError || (userUsages && userUsages.length > 0)) {
         return NextResponse.json({ valid: false, message: '您已使用过此兑换码' });
@@ -66,7 +66,7 @@ export async function GET(request: NextRequest) {
     const { data: codes, error } = await supabase
       .from('redeem_codes')
       .select('*')
-      .order('createdAt', { ascending: false });
+      .order('createdat', { ascending: false });
 
     console.log('查询结果:', { codes, error });
 
@@ -80,11 +80,11 @@ export async function GET(request: NextRequest) {
         const { count } = await supabase
           .from('redeem_usages')
           .select('*', { count: 'exact', head: true })
-          .eq('codeId', code.id);
+          .eq('codeid', code.id);
 
         return {
           ...code,
-          usedCount: count || 0
+          usedcount: count || 0
         };
       })
     );
@@ -168,8 +168,8 @@ export async function POST(request: NextRequest) {
     const { data: userUsages, error: usageError } = await supabase
       .from('redeem_usages')
       .select('*')
-      .eq('codeId', codeData.id)
-      .eq('userId', finalUserId);
+      .eq('codeid', codeData.id)
+      .eq('userid', finalUserId);
 
     if (usageError || (userUsages && userUsages.length > 0)) {
       return NextResponse.json(
@@ -182,10 +182,10 @@ export async function POST(request: NextRequest) {
     const { error: insertError } = await supabase
       .from('redeem_usages')
       .insert({
-        codeId: codeData.id,
+        codeid: codeData.id,
         code: codeData.code,
         count: codeData.count,
-        userId: finalUserId,
+        userid: finalUserId,
         description: codeData.description
       });
 

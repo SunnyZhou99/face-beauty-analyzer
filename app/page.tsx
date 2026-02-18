@@ -332,8 +332,8 @@ export default function Home() {
     const result = await useRedeemCodeAPI(redeemCode);
 
     if (result.success) {
-      const current = getRemainingCount();
-      const newCount = current + (result.count || 0);
+      // 重新获取剩余次数（API函数中已经更新了localStorage）
+      const newCount = getRemainingCount();
       setRemainingCount(newCount);
 
       // 刷新已使用的兑换码列表

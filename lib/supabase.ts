@@ -25,10 +25,10 @@ export interface RedeemCode {
 // 兑换记录类型
 export interface RedeemUsage {
   id: string;
-  codeId: string;
+  codeid: string;
   code: string;
   count: number;
-  userId: string;
-  usedAt: string;
+  userid: string;
+  usedat: string;
   description: string;
 }
