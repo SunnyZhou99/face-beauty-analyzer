@@ -18,6 +18,7 @@ export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const [loginLoading, setLoginLoading] = useState(false);
   const [codes, setCodes] = useState<RedeemCode[]>([]);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -30,7 +31,9 @@ export default function AdminPage() {
   });
 
   // 简单的密码验证（实际应用中应该使用更安全的方式）
-  const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'admin123';
+  const ADMIN_PASSWORD = typeof window !== 'undefined' && (window as any).NEXT_PUBLIC_ADMIN_PASSWORD
+    ? (window as any).NEXT_PUBLIC_ADMIN_PASSWORD
+    : 'admin123';
 
   // 检查是否已登录
   useEffect(() => {
@@ -42,14 +45,34 @@ export default function AdminPage() {
   }, []);
 
   // 登录
-  const handleLogin = () => {
-    if (password === ADMIN_PASSWORD) {
-      setIsAuthenticated(true);
-      localStorage.setItem('adminAuth', 'true');
-      setPasswordError('');
-      fetchCodes();
-    } else {
-      setPasswordError('密码错误');
+  const handleLogin = async () => {
+    if (!password) {
+      setPasswordError('请输入密码');
+      return;
+    }
+
+    setLoginLoading(true);
+    try {
+      const response = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setIsAuthenticated(true);
+        localStorage.setItem('adminAuth', 'true');
+        setPasswordError('');
+        fetchCodes();
+      } else {
+        setPasswordError(data.message || '密码错误');
+      }
+    } catch (error) {
+      setPasswordError('网络错误，请重试');
+    } finally {
+      setLoginLoading(false);
     }
   };
 
@@ -204,9 +227,10 @@ export default function AdminPage() {
 
             <button
               onClick={handleLogin}
-              className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-3 rounded-xl transition-all transform hover:scale-105"
+              disabled={loginLoading}
+              className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-3 rounded-xl transition-all transform hover:scale-105 disabled:opacity-50"
             >
-              登录
+              {loginLoading ? '登录中...' : '登录'}
             </button>
 
             <div className="text-center mt-6">
