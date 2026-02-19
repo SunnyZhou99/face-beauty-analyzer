@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { promises as fs } from 'fs';
 import path from 'path';
 
+export const runtime = 'nodejs';
+
 // 数据文件路径
 const DATA_DIR = path.join(process.cwd(), 'data');
 const REDEEM_CODES_FILE = path.join(DATA_DIR, 'redeem-codes.json');

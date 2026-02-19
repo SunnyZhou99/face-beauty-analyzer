@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase, RedeemCode, RedeemUsage } from '@/lib/supabase';
 
+export const runtime = 'edge';
+
 // GET: 获取所有兑换码或验证特定兑换码
 export async function GET(request: NextRequest) {
   try {

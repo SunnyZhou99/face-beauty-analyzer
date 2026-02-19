@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 
+export const runtime = 'edge';
+
 // POST: 创建兑换码
 export async function POST(request: NextRequest) {
   try {
