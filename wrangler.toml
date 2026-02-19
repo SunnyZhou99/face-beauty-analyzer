@@ -1,0 +1,9 @@
+name = "face-beauty-analyzer"
+compatibility_date = "2024-04-01"
+
+[[build]]
+command = "npx @cloudflare/next-on-pages"
+
+[build.upload]
+format = "directory"
+dir = ".vercel/output/static"
