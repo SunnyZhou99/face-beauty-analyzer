@@ -1,7 +1,3 @@
-# Cloudflare Pages
-.vercel/
-.netlify/
-
 # Dependencies
 node_modules/
 
@@ -9,6 +5,10 @@ node_modules/
 .next/
 out/
 dist/
+
+# Build
+.vercel/
+.netlify/
 
 # Environment
 .env*.local
